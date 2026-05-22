@@ -21,7 +21,14 @@ jobs:
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
 
-      - name: Test formula
+      - name: Link tap into Homebrew
         run: |
-          brew install --build-from-source ./Formula/${{ matrix.formula }}.rb
-          brew test ${{ matrix.formula }}
+          TAP_DIR="$(brew --repository)/Library/Taps/neronlux"
+          mkdir -p "$TAP_DIR"
+          ln -s "$GITHUB_WORKSPACE" "$TAP_DIR/homebrew-tap"
+
+      - name: Install formula
+        run: brew install --build-from-source neronlux/tap/${{ matrix.formula }}
+
+      - name: Test formula
+        run: brew test ${{ matrix.formula }}
