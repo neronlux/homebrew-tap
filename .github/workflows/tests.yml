@@ -1,0 +1,27 @@
+name: Test Formulae
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        formula: [ntech-team-kit]
+    steps:
+      - name: Checkout tap
+        uses: actions/checkout@v4
+
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Test formula
+        run: |
+          brew install --build-from-source ./Formula/${{ matrix.formula }}.rb
+          brew test ${{ matrix.formula }}
