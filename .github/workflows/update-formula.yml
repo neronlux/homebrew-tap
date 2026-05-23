@@ -15,7 +15,7 @@ jobs:
 
       - name: Update formula
         run: |
-          TAG="${#{github.event.client_payload.tag}}"
+          TAG="${{ github.event.client_payload.tag }}"
           SHA256="${{ github.event.client_payload.sha256 }}"
           TARBALL_URL="${{ github.event.client_payload.tarball_url }}"
 
@@ -57,7 +57,7 @@ jobs:
 
                   ntech-team-kit install
 
-                The CLI, is now fully native Go (no shell script delegation), making
+                The CLI is now fully native Go (no shell script delegation), making
                 install / update / uninstall / status reliable across platforms.
 
                 Recommended next steps:
@@ -77,8 +77,8 @@ jobs:
             end
 
             test do
-              assert_match version.to_s, shell_output("#{#bin}/ntech-team-kit version")
-              assert_match "ntech-team-kit", shell_output("#{#bin}/ntech-team-kit path")
+              assert_match version.to_s, shell_output("#{bin}/ntech-team-kit version")
+              assert_match "ntech-team-kit", shell_output("#{bin}/ntech-team-kit path")
             end
           end
           FORMULA_EOF
