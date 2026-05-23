@@ -15,7 +15,7 @@ jobs:
 
       - name: Update formula
         run: |
-          TAG="${{ github.event.client_payload.tag }}"
+          TAG="${#{github.event.client_payload.tag}}"
           SHA256="${{ github.event.client_payload.sha256 }}"
           TARBALL_URL="${{ github.event.client_payload.tarball_url }}"
 
@@ -46,21 +46,26 @@ jobs:
                      "./cmd/ntech-team-kit"
 
               libexec.install "skills", "agents", "commands", "rules", "plugins"
-              libexec.install "install.sh", "opencode.jsonc", "AGENTS.md", "package.json", "VERSION"
+              libexec.install "opencode.jsonc", "AGENTS.md", "package.json", "VERSION"
             end
 
             def caveats
               <<~EOS
-                The kit is now installed, but it is **not** yet active in OpenCode.
+                The kit contents are installed, but they are **not** active in OpenCode.
 
-                Run the following command to install it into your OpenCode config:
+                Run the following to copy skills, agents, commands and rules into your OpenCode config:
 
                   ntech-team-kit install
+
+                The CLI, is now fully native Go (no shell script delegation), making
+                install / update / uninstall / status reliable across platforms.
 
                 Recommended next steps:
 
                   ntech-team-kit doctor
+                  ntech-team-kit update
                   ntech-team-kit status
+                  ntech-team-kit uninstall     # if you ever want to remove everything
 
                 To enable the background CI watcher plugin:
 
@@ -72,8 +77,8 @@ jobs:
             end
 
             test do
-              assert_match version.to_s, shell_output("#{bin}/ntech-team-kit version")
-              assert_match "ntech-team-kit", shell_output("#{bin}/ntech-team-kit path")
+              assert_match version.to_s, shell_output("#{#bin}/ntech-team-kit version")
+              assert_match "ntech-team-kit", shell_output("#{#bin}/ntech-team-kit path")
             end
           end
           FORMULA_EOF
@@ -91,4 +96,4 @@ jobs:
 
       - name: Trigger formula test
         run: |
-          echo "Formula updated — the Test Formulae workflow will run automatically on this push."
+          echo "Formula updated — the Test Formulae workflow will run via workflow_run trigger."
