@@ -16,84 +16,15 @@ jobs:
       - name: Update formula
         run: |
           TAG="${{ github.event.client_payload.tag }}"
-          SHA256="${{ github.event.client_payload.sha256 }}"
-          TARBALL_URL="${{ github.event.client_payload.tarball_url }}"
+          FORMULA="${{ github.event.client_payload.formula }}"
 
           echo "Updating formula to ${TAG}..."
-          echo "  SHA256: ${SHA256}"
-          echo "  URL: ${TARBALL_URL}"
-
-          cat > Formula/ntech-team-kit.rb << 'FORMULA_EOF'
-          class NtechTeamKit < Formula
-            desc "OpenCode-native skills, agents, commands, and rules (Cursor Team Kit port)"
-            homepage "https://github.com/neronlux/ntech-team-kit"
-            url "__TARBALL_URL__"
-            sha256 "__SHA256__"
-            license "MIT"
-            head "https://github.com/neronlux/ntech-team-kit.git", branch: "main"
-
-            depends_on "go" => :build
-
-            def install
-              ldflags = %W[
-                -s -w
-                -X main.version=#{version}
-                -X github.com/neronlux/ntech-team-kit/internal/kit.defaultKitRoot=#{libexec}
-              ]
-
-              system "go", "build",
-                     *std_go_args(ldflags: ldflags, output: bin/"ntech-team-kit"),
-                     "./cmd/ntech-team-kit"
-
-              libexec.install "skills", "agents", "commands", "rules", "plugins"
-              libexec.install "opencode.jsonc", "AGENTS.md", "package.json", "VERSION"
-            end
-
-            def caveats
-              <<~EOS
-                The kit contents are installed, but they are **not** active in OpenCode.
-
-                Run the following to copy skills, agents, commands and rules into your OpenCode config:
-
-                  ntech-team-kit install
-
-                The CLI is now fully native Go (no shell script delegation), making
-                install / update / uninstall / status reliable across platforms.
-
-                Recommended next steps:
-
-                  ntech-team-kit doctor
-                  ntech-team-kit update
-                  ntech-team-kit status
-                  ntech-team-kit uninstall     # if you ever want to remove everything
-
-                To enable the background CI watcher plugin:
-
-                  echo 'export OPENCODE_NTECH_CI_WATCH=1' >> ~/.zshrc   # or ~/.bashrc
-
-                For more information, see:
-                  https://github.com/neronlux/ntech-team-kit
-              EOS
-            end
-
-            test do
-              assert_match version.to_s, shell_output("#{bin}/ntech-team-kit version")
-              assert_match "ntech-team-kit", shell_output("#{bin}/ntech-team-kit path")
-            end
-          end
-          FORMULA_EOF
-
-          sed -i "s|__TARBALL_URL__|${TARBALL_URL}|g" Formula/ntech-team-kit.rb
-          sed -i "s|__SHA256__|${SHA256}|g" Formula/ntech-team-kit.rb
+          echo "${FORMULA}" | base64 -d > Formula/ntech-team-kit.rb
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add Formula/ntech-team-kit.rb
-          git commit -m "chore: update ntech-team-kit to ${TAG}"
+          git commit -m "chore: update ntech-team-kit to ${TAG}" || echo "No formula changes"
           git push origin main
 
           echo "Tap formula updated to ${TAG}!"
-
-      - name: Trigger formula test
-        run: |
-          echo "Formula updated — the Test Formulae workflow will run via workflow_run trigger."
