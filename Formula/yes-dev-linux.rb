@@ -1,8 +1,8 @@
 class YesDevLinux < Formula
   desc "Auto-approve Chrome's Allow remote debugging prompt (Linux AT-SPI port of yes-dev)"
   homepage "https://github.com/neronlux/yes-dev-linux"
-  url "https://github.com/neronlux/yes-dev-linux/archive/refs/tags/v0.8.0.tar.gz"
-  sha256 "ff07a6ed84edf4eeb00a360599b7bab6700c7e5d5be52f439cf231ce4521be03"
+  url "https://github.com/neronlux/yes-dev-linux/archive/refs/tags/v0.8.1.tar.gz"
+  sha256 "26b081bf450660d7c930f71efdb8a1e0d403285912e98d8392a0eb86a2f4bdbd"
   license "MIT"
   head "https://github.com/neronlux/yes-dev-linux.git", branch: "main"
 
@@ -30,8 +30,9 @@ class YesDevLinux < Formula
       Linux-only (AT-SPI). On macOS use the upstream build instead:
         https://github.com/dev-newb/yes-dev
 
-      System packages required (Ubuntu/Debian):
-        sudo apt install python3-gi gir1.2-atspi-2.0 python3-pil python3-evdev dbus
+      System packages required (Ubuntu/Debian; python3-dbus is dbus-python,
+      needed for the portal screenshot — the plain dbus daemon is not enough):
+        sudo apt install python3-gi gir1.2-atspi-2.0 python3-pil python3-evdev python3-dbus
       Auto-click creates its own absolute uinput pointer, so the user needs
       write access to /dev/uinput (e.g. udev rule GROUP="input" + membership).
 
@@ -49,6 +50,8 @@ class YesDevLinux < Formula
       burst guard pauses after 60 approvals/min. Approvals are [ACTION]
       lines in ~/.local/share/YesDev/yes-dev.log. Full field record:
         https://github.com/neronlux/yes-dev-linux/blob/main/TESTING.md
+      Contributing, tests, and calibration captures:
+        https://github.com/neronlux/yes-dev-linux/blob/main/CONTRIBUTING.md
     EOS
   end
 
