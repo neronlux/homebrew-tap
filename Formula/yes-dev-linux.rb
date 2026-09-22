@@ -1,8 +1,8 @@
 class YesDevLinux < Formula
   desc "Auto-approve Chrome's Allow remote debugging prompt (Linux AT-SPI port of yes-dev)"
   homepage "https://github.com/neronlux/yes-dev-linux"
-  url "https://github.com/neronlux/yes-dev-linux/archive/refs/tags/v0.8.9.tar.gz"
-  sha256 "0c5969dee01c26d95547bf57bc99fcd789d8cb2f4b62b1503fb9b1569d7e2f04"
+  url "https://github.com/neronlux/yes-dev-linux/archive/refs/tags/v0.8.10.tar.gz"
+  sha256 "2c0c26f6e95f02755c45ad7dd3a3841ae42036e07f59a646ce3b24f8322167fe"
   license "MIT"
   head "https://github.com/neronlux/yes-dev-linux.git", branch: "main"
 
