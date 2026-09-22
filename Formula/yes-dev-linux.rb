@@ -53,7 +53,8 @@ class YesDevLinux < Formula
 
   test do
     assert_match "Linux engine", shell_output("#{bin}/yes-dev-linux --help")
-    system "/usr/bin/python3", "-m", "py_compile",
-           libexec/"watcher_linux.py", libexec/"platform_linux.py"
+    # Keep bytecode out of the read-only Cellar.
+    system "env", "PYTHONPYCACHEPREFIX=#{testpath}/pycache", "/usr/bin/python3",
+           "-m", "py_compile", libexec/"watcher_linux.py", libexec/"platform_linux.py"
   end
 end
