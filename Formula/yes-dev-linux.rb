@@ -1,8 +1,8 @@
 class YesDevLinux < Formula
-  desc "Auto-approve Chrome's Allow remote debugging prompt (Linux AT-SPI port of yes-dev)"
+  desc "Watch for Chrome's Allow remote debugging prompt (Linux AT-SPI port of yes-dev)"
   homepage "https://github.com/neronlux/yes-dev-linux"
-  url "https://github.com/neronlux/yes-dev-linux/archive/refs/tags/v0.3.0.tar.gz"
-  sha256 "4008e07b808003f96d34e5a3c0e1cf31251fd0fbf9a53d6f8103aadcc516179c"
+  url "https://github.com/neronlux/yes-dev-linux/archive/refs/tags/v0.6.0.tar.gz"
+  sha256 "3a0ceb2310555f6e42a61ba1b3fc1b84986cb00d68baf8063226cd8b902c086c"
   license "MIT"
   head "https://github.com/neronlux/yes-dev-linux.git", branch: "main"
 
@@ -18,7 +18,7 @@ class YesDevLinux < Formula
   end
 
   service do
-    run [opt_bin/"yes-dev-linux", "--enable-click"]
+    run [opt_bin/"yes-dev-linux", "--observe"]
     keep_alive true
     log_path var/"log/yes-dev-linux.log"
     error_log_path var/"log/yes-dev-linux.log"
@@ -27,27 +27,29 @@ class YesDevLinux < Formula
 
   def caveats
     <<~EOS
-      Linux-only (AT-SPI). On macOS use the upstream build instead:
+      Linux-only watchdog (AT-SPI). On macOS use the upstream build instead:
         https://github.com/dev-newb/yes-dev
 
       System packages required (Ubuntu/Debian):
         sudo apt install python3-gi gir1.2-atspi-2.0
-      The experimental keyboard fallback additionally needs ydotoold running.
 
-      Start OBSERVE-ONLY first and capture a live prompt before arming clicks:
+      v0.6 status: the engine DETECTS the consent dialog (proven live) but
+      does not click it - field work proved no synthetic input reaches
+      Chrome's secure Views bubble on Wayland, so auto-approve is blocked
+      by the platform. It logs candidates with window geometry for a
+      human to click. If your stack exposes the button (e.g. X11), the
+      AT-SPI Action path still approves it.
+
+      Start in observe mode and capture a live prompt before anything else:
         yes-dev-linux --observe
         yes-dev-linux --probe
 
-      Then, to run persistently (restarts at login):
+      Then, to watch persistently (restarts at login):
         brew services start yes-dev-linux
-      or run armed in the foreground:
-        yes-dev-linux --enable-click
 
-      NOTE: --observe always wins over --enable-click. Logs live at
-      ~/.local/share/YesDev/yes-dev.log (approvals are [ACTION] lines).
-      Auto-approving lets ANY local process attach to your signed-in
-      browser - see the README before arming the clicker:
-        https://github.com/neronlux/yes-dev-linux
+      NOTE: approvals would appear as [ACTION] lines; candidate sightings
+      are WARN lines. Logs also live at ~/.local/share/YesDev/yes-dev.log.
+      Full findings: https://github.com/neronlux/yes-dev-linux/blob/main/TESTING.md
     EOS
   end
 
