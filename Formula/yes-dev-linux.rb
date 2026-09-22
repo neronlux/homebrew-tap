@@ -1,8 +1,8 @@
 class YesDevLinux < Formula
   desc "Auto-approve Chrome's Allow remote debugging prompt (Linux AT-SPI port of yes-dev)"
   homepage "https://github.com/neronlux/yes-dev-linux"
-  url "https://github.com/neronlux/yes-dev-linux/archive/refs/tags/v0.8.12.tar.gz"
-  sha256 "897fef26193121f8e4b32e262237e2061b42e807997780fa7d93c7a5c8b35155"
+  url "https://github.com/neronlux/yes-dev-linux/archive/refs/tags/v0.8.13.tar.gz"
+  sha256 "b2fbbc6215b0c035534a7482975827be2b073cebc079b753d7db90b5689bf92b"
   license "MIT"
   head "https://github.com/neronlux/yes-dev-linux.git", branch: "main"
 
@@ -35,6 +35,9 @@ class YesDevLinux < Formula
         sudo apt install python3-gi gir1.2-atspi-2.0 python3-pil python3-evdev python3-dbus
       Auto-click creates its own absolute uinput pointer, so the user needs
       write access to /dev/uinput (e.g. udev rule GROUP="input" + membership).
+
+      Verify the install first (5s: AT-SPI, screenshot, pointer, click):
+        yes-dev-linux --selftest
 
       Start OBSERVE-ONLY first and capture a live prompt before arming:
         yes-dev-linux --observe
